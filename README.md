@@ -7,7 +7,7 @@
 
 2) User can be able to upload the file on the server the server stores the encrypted file  (encrypted using the secret key)
 
-3)user has privilages to give the access of file to the other users 
+3) user has privilages to give the access of file to the other users 
 
 ## Installation Steps
 
