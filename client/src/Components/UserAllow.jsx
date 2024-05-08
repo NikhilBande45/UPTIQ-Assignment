@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const UserAllow = () => {
     const [email, setEmail] = useState('');
-    const {id}=useParams()
-   
+    const { id } = useParams();
+    const navigate = useNavigate();
     
     const sendFile = async () => {
         const data = {
             Email: email,
-            secretKey: '140318'
+            secretKey: sessionStorage.getItem("private Key")
         };
 
         try {
@@ -20,20 +20,28 @@ const UserAllow = () => {
                 }
             });
             console.log(response.data);
+            // Navigate to /doc upon successful upload
+            navigate('/doc');
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
     return (
-        <div>
+        <div className="flex flex-col items-center">
             <input 
+                className="border border-gray-400 rounded-md py-2 px-4 mb-4"
                 type="email" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 placeholder="Enter email address" 
             />
-            <button onClick={sendFile}>User Allow</button>
+            <button 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={sendFile}
+            >
+                Send
+            </button>
         </div>
     );
 };

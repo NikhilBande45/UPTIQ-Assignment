@@ -31,6 +31,8 @@ const Login = () => {
     if(reg_data.status===200){
       alert("Login Successfully")
       sessionStorage.setItem('token',reg_data.data.authToken)
+      sessionStorage.setItem("userId",reg_data.data.id)
+      sessionStorage.setItem("userName",reg_data.data.name)
     }
     else if(reg_data!==200){
       alert("Invalid Credentials")

@@ -36,7 +36,7 @@ const handleUserSignin=async(req,res)=>{
             return res.status(401).json({status:"Failed",message:"Invalid credentials"});
         }
         const authToken=generateToken({_id:user._id,Name:user.Name,Email:user.Email});
-        return res.json({status:"OK", authToken});
+        return res.json({status:"OK", authToken,id:user._id,name:user.Name});
         
     } catch (error) {
         console.log(error.message);

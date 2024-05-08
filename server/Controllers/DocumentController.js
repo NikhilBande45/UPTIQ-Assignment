@@ -3,40 +3,58 @@ const UserModel = require('../Models/UserModel');
 const handleGetAllDocuments = async (req, res) => {
     try {
         // const {user}=req;
+        console.log("All docs");
         let documents = await DocumentModel.find({}).populate({ path: 'Owner', select: "-Password" });
         return res.json({ status: "OK", documents });
     } catch (error) {
 
     }
 }
+
 const handleNewDocument = async (req, res) => {
     try {
-
-        
-        console.log(req.body);
-        console.log(req.file);
         const { user } = req;
         const { secretKey } = req.body;
-        
-        await DocumentModel.create({
+        // console.log(req.file.path);
+        // console.log(req.body);
+
+        const doc=await DocumentModel.create({
             Owner: user._id,
             secretKey,
-            Filepath: req.body.file,
+            Filepath: req.file.path,
             AccessebleUsers: []
         });
-
-        
+        console.log(doc);
         return res.json({ status: "OK" });
 
     } catch (error) {
+        console.log(error.message);
+    }
+}
+const handleDownloadDocument = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log(id);
+        
+      
+        const document = await DocumentModel.findById(id);
 
+        console.log(document);
+        
+        if (!document) {
+            return res.status(404).json({ error: "Document not found" });
+        }
+
+        // Send the document file for download
+        res.download(document.Filepath);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Internal server error" });
     }
 }
 
 const handleGetDocument = async (req, res) => {
     try {
-        console.log(req.params);
-        
         const { id } = req.params;
         const { user } = req;
         const docs = await DocumentModel.findById(id).populate({ path: 'Owner', select: "-Password" });
@@ -59,18 +77,18 @@ const handleGetDocument = async (req, res) => {
 
 const handleGetAllowedUsers = async (req, res) => {
     try {
-        console.log(req.params);
         const { id } = req.params;
-        
         const { user } = req;
+        console.log(user);
         const docs = await DocumentModel.findById(id).populate({ path: 'Owner', select: "-Password" });
+        // console.log(docs);
         if (!docs)
             return res.status(404).json({ message: "Document Not found" });
         if (user._id.toString() !== docs.Owner._id.toString())
             return res.status(201).json({ message: "Unauthorised request" });
         for (let i = 0; i < docs.AccessebleUsers.length; i++) {
             await docs.populate({
-                path: `AccessebleUsers.${i}`,
+                path: `AccessebleUsers.${i}.user`,
                 model: 'User',
                 select: '-Password'
             });
@@ -85,18 +103,16 @@ const handleGetAllowedUsers = async (req, res) => {
 
 const handleAddAllowedUser = async (req, res) => {
     try {
-        
         const { id } = req.params;
         const { user } = req;
         const { Email } = req.body;
-        console.log(Email);
         let docs = await DocumentModel.findById(id).populate({ path: 'Owner', select: "-Password" });
         // console.log(docs);
         if (!docs)
             return res.status(404).json({ message: "Document Not found" });
 
         if (user._id.toString() !== docs.Owner._id.toString())
-            return res.json(201).json({ message: "Unauthorised request" });
+            return res.status(201).json({ message: "Unauthorised request" });
 
         const AllowedUser = await UserModel.findOne({ Email });
         if (!AllowedUser) {
@@ -105,7 +121,7 @@ const handleAddAllowedUser = async (req, res) => {
         if (docs.AccessebleUsers.includes( AllowedUser._id )) {
             return res.json({ message: "User already have access of the document" });
         }
-        docs.AccessebleUsers.push( AllowedUser._id);
+        docs.AccessebleUsers.push( {user:AllowedUser._id});
         await docs.save();
 
         return res.json({ status: "OK" });
@@ -120,8 +136,9 @@ const handleDeleteAllowedUser = async (req, res) => {
         const { id } = req.params;
         const { user } = req;
         const { userIdtoDelete } = req.body;
+        console.log(userIdtoDelete);
         let docs = await DocumentModel.findById(id).populate({ path: 'Owner', select: "-Password" });
-        // console.log(docs);
+        console.log(docs);
         if (!docs)
             return res.status(404).json({ message: "Document Not found" });
 
@@ -135,9 +152,9 @@ const handleDeleteAllowedUser = async (req, res) => {
         }
 
         docs.AccessebleUsers = docs.AccessebleUsers.filter((user) => {
-            return user.toString() !== userIdtoDelete.toString();
+            return user._id.toString() !== userIdtoDelete.toString();
         });
-        console.log(docs);
+        // console.log(docs);
         await docs.save();
         return res.json({ status: "OK" });
     } catch (error) {
@@ -163,4 +180,4 @@ const handleUpdateDocument = async (req, res) => {
 
     // }
 }
-module.exports = { handleAddAllowedUser, handleGetAllowedUsers, handleGetDocument, handleNewDocument, handleGetAllDocuments, handleUpdateDocument, handleDeleteAllowedUser }
+module.exports = { handleAddAllowedUser,handleDownloadDocument, handleGetAllowedUsers, handleGetDocument, handleNewDocument, handleGetAllDocuments, handleUpdateDocument, handleDeleteAllowedUser }

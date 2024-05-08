@@ -29,7 +29,7 @@ const privateKeyByteArray = base64.toByteArray(privateKey);
 
 
     console.log(data);
-    //  alert(privateKey)
+     alert(privateKey)
     //  const myForm = new FormData();
     //  myForm.append('Name', data.username);
     //  myForm.append('Email', data.email);
