@@ -1,11 +1,6 @@
 
 # DocShare
 
-The Todo App is a simple yet powerful task management application built using Vite and React. It provides users with an intuitive interface to create, manage, and track their tasks effortlessly.
-
-
-
-
 ## features
 Features
 
@@ -23,13 +18,21 @@ To run this application locally, follow these steps:
 Clone this repository to your local machine:
 
 git clone  https://github.com/NikhilBande45/UPTIQ-Assignment
+
 Navigate to the project directory: cd DocShare
+
 Navigate to the project directory: cd client
+
 Install dependencies: npm install
+
 npm run dev
+
 Navigate to the project directory: cd client
+
 Install dependencies: npm install
+
 npm run dev
+
 After completing the installation steps, you can start the development server:
 
 
