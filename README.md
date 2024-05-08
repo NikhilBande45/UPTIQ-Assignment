@@ -1,18 +1,16 @@
 
-# DocShare
+# DocShare - Secure Document Sharing System
 
 ## features
-Features
 
-1)Create Tasks: Add new tasks
+1) User Authentication and Authorization
 
+2) User can be able to upload the file on the server the server stores the encrypted file  (encrypted using the secret key)
 
-2)Manage Tasks: Mark tasks as completed or delete them.
+3)user has privilages to give the access of file to the other users 
 
-3)Responsive Design: The app is responsive and works well on various devices.
+## Installation Steps
 
-
-## Installation 
 To run this application locally, follow these steps:
 
 Clone this repository to your local machine:
